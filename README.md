@@ -4,7 +4,7 @@ This repository is set up to manage dotfiles with [GNU Stow](https://www.gnu.org
 
 ## Layout
 
-Each top-level directory is a stow package whose contents mirror the target path under your home directory.
+Each top-level directory is a stow package whose contents mirror the target path under your home directory. The installer ignores hidden directories and common repository-only directories such as `docs/` and `scripts/`.
 
 For example:
 

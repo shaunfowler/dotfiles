@@ -8,9 +8,18 @@ if ! command -v stow >/dev/null 2>&1; then
 fi
 
 target_dir="${TARGET_DIR:-$HOME}"
+packages=()
 
 if [ "$#" -eq 0 ]; then
-  mapfile -t packages < <(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sed 's|^\./||' | sort)
+  while IFS= read -r package; do
+    case "$package" in
+      docs|scripts)
+        continue
+        ;;
+    esac
+
+    packages+=("$package")
+  done < <(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sed 's|^\./||' | sort)
 else
   packages=("$@")
 fi
