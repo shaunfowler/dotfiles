@@ -10,7 +10,7 @@ fi
 target_dir="${TARGET_DIR:-$HOME}"
 
 if [ "$#" -eq 0 ]; then
-  mapfile -t packages < <(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' -printf '%f\n' | sort)
+  mapfile -t packages < <(find . -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sed 's|^\./||' | sort)
 else
   packages=("$@")
 fi
