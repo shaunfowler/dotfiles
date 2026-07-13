@@ -40,6 +40,6 @@ cd "$DOTFILES_DIR"
 
 # 3. Stow configuration folders
 echo "Stowing configurations..."
-stow .
+stow . -t ~
 
 echo "Stowing complete."
