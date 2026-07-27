@@ -9,9 +9,9 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
 # Default Applications
-export EDITOR="nvim"
-export VISUAL="cat"
-export PAGER="less"
+# export EDITOR="nvim"
+# export VISUAL="cat"
+# export PAGER="less"
 
 # GPG
 export GPG_TTY=$(tty)

@@ -1,3 +1,5 @@
+alias s='source ~/.config/zsh/.zshrc'
+
 # Better ls
 alias ls='eza --icons auto'
 
@@ -14,4 +16,8 @@ alias tree='eza --tree --icons'
 compdef eza=ls
 
 # Better cat
-alias cat='bat'
+# alias cat='bat'
+
+# AI
+alias claudeai="claude --model global.anthropic.claude-opus-4-8 --enable-auto-mode"
+alias codexai="codex --yolo -c 'model_reasoning_effort="high"' -c 'model_reasoning_summary="detailed"' -c model_supports_reasoning_summaries=true"

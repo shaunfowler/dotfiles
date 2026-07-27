@@ -4,34 +4,29 @@ set -e
 
 echo "System setup starting..."
 
-# 1. Detect OS and install Stow
-if ! command -v stow &> /dev/null; then
-    echo "GNU Stow not found. Installing..."
-    
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        # Ubuntu / Debian
-        sudo apt-get update
-        sudo apt-get install -y stow
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        if ! command -v brew &> /dev/null; then
-            echo "Homebrew is required but not installed. Installing Homebrew first..."
-            /bin/bash -c "$(curl -fsSL https://githubusercontent.com)"
-            
-            # Ensure brew is in PATH for the rest of this script execution
-            if [[ -f /opt/homebrew/bin/brew ]]; then
-                eval "$(/opt/homebrew/bin/brew shellenv)"
-            elif [[ -f /usr/local/bin/brew ]]; then
-                eval "$(/usr/local/bin/brew shellenv)"
-            fi
+# 1. Detect OS and install deps
+
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Ubuntu / Debian
+    sudo apt-get update
+    sudo apt-get install -y stow
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS
+    if ! command -v brew &> /dev/null; then
+        echo "Homebrew is required but not installed. Installing Homebrew first..."
+        /bin/bash -c "$(curl -fsSL https://githubusercontent.com)"
+        
+        # Ensure brew is in PATH for the rest of this script execution
+        if [[ -f /opt/homebrew/bin/brew ]]; then
+            eval "$(/opt/homebrew/bin/brew shellenv)"
+        elif [[ -f /usr/local/bin/brew ]]; then
+            eval "$(/usr/local/bin/brew shellenv)"
         fi
-        brew install stow
-    else
-        echo "Unsupported OS: $OSTYPE"
-        exit 1
     fi
+    brew install stow fd fzf zoxide bat
 else
-    echo "GNU Stow is already installed."
+    echo "Unsupported OS: $OSTYPE"
+    exit 1
 fi
 
 # 2. Sync to script directory
@@ -42,4 +37,12 @@ cd "$DOTFILES_DIR"
 echo "Stowing configurations..."
 stow . -t ~
 
-echo "Stowing complete."
+echo "Touching Zsh configuration files..."
+
+touch ~/.config/zsh/fzf.zsh
+touch ~/.config/zsh/aliases.zsh
+touch ~/.config/zsh/bindings.zsh
+touch ~/.config/zsh/plugins.zsh
+touch ~/.config/zsh/prompt.zsh
+
+echo "Complete."
