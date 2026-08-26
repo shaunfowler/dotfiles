@@ -2,9 +2,17 @@
 
 add_newline = false
 
-format = "$directory$nodejs $character"
+format = "${custom.short_hostname}$directory $character"
 
 right_format = "$git_branch$git_status"
+
+# [hostname]
+# format = "[$hostname](bold blue) "
+
+[custom.short_hostname]
+command = "hostname | sed 's/^shaun-coder-//'"
+when = true
+format = "[$output](bold blue) "
 
 [directory]
 format            = "[$path](cyan) "
