@@ -1,8 +1,18 @@
+# Defaults are needed when this file is sourced directly instead of loaded by
+# zsh after .zshenv.
+: "${XDG_CONFIG_HOME:=$HOME/.config}"
+: "${XDG_CACHE_HOME:=$HOME/.cache}"
+: "${XDG_STATE_HOME:=$HOME/.local/state}"
+: "${ZDOTDIR:=$XDG_CONFIG_HOME/zsh}"
+export XDG_CONFIG_HOME XDG_CACHE_HOME XDG_STATE_HOME ZDOTDIR
+
 # History
 
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=100000
 SAVEHIST=100000
+
+mkdir -p "${HISTFILE:h}" "$XDG_CACHE_HOME/zsh"
 
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
@@ -23,8 +33,9 @@ export PATH="$HOME/.local/bin:$PATH"
 # Load completion system
 autoload -Uz compinit
 
-# Initialize completion with cached metadata file
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+# Initialize completion with cached metadata and silently skip insecure paths.
+# Do not use -u here: it loads insecure completion directories.
+compinit -i -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
 # Enable interactive completion menu selection
 zstyle ':completion:*' menu select
@@ -34,13 +45,24 @@ zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'  # lowercase input matches upper and lower
 
 # zoxide
-eval "$(zoxide init zsh)"
+(( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
 
 # fzf
-source <(fzf --zsh)
+if (( $+commands[fzf] )); then
+  if fzf_init="$(fzf --zsh 2>/dev/null)"; then
+    eval "$fzf_init"
+  else
+    # fzf versions packaged by some Linux distributions predate --zsh.
+    [[ -r /usr/share/doc/fzf/examples/completion.zsh ]] && \
+      source /usr/share/doc/fzf/examples/completion.zsh
+    [[ -r /usr/share/doc/fzf/examples/key-bindings.zsh ]] && \
+      source /usr/share/doc/fzf/examples/key-bindings.zsh
+  fi
+  unset fzf_init
+fi
 
 # Starship
-eval "$(starship init zsh)"
+(( $+commands[starship] )) && eval "$(starship init zsh)"
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
@@ -50,8 +72,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 # Modular config files
 #
 
-source "$ZDOTDIR/fzf.zsh"
-source "$ZDOTDIR/aliases.zsh"
-source "$ZDOTDIR/bindings.zsh"
-source "$ZDOTDIR/plugins.zsh"
-source "$ZDOTDIR/prompt.zsh"
+for config_file in fzf aliases bindings plugins prompt; do
+  [[ -r "$ZDOTDIR/$config_file.zsh" ]] && source "$ZDOTDIR/$config_file.zsh"
+done
+unset config_file

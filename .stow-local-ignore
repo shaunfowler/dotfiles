@@ -1,5 +1,6 @@
 .git
 .gitignore
 install.sh
+.codex
 .config/zsh/plugins/
 README.md

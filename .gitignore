@@ -1,1 +1,3 @@
 .config/zsh/plugins
+.codex/
+.config/zsh/.zcompdump*
