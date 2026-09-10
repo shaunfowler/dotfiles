@@ -1,3 +1,4 @@
 .config/zsh/plugins
 .codex/
 .config/zsh/.zcompdump*
+.DS_Store
